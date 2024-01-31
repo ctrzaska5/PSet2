@@ -1,0 +1,113 @@
+---
+title: "PSet2"
+author: "Christopher Trzaska"
+date: "2024-01-31"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  knitr::opts_chunk$set(echo = TRUE,
+eval = TRUE,
+fig.align = 'center',
+message = FALSE,
+warning = FALSE,
+library(tidyverse),
+
+
+```
+1.
+
+
+2.
+library(tidyverse)
+# open my data
+gspace = read_csv(greenspace_data_share.csv)
+# summarize average urban greenspace by region
+table =
+  gspace |>
+  group_by(Major_Geo_Region) |> # added pipe to end of expression
+summarise(
+  obs = n(), #added comma after expression
+  avg = mean(annual_avg_2020), #added underscore between avg and 2020
+  weighted_avg ==  mean(annual_weight_avg_2020) #added second equals sign, #added underscore to "weighted avg"
+)
+# output as table
+library(knitr) #added package "knitr" to enable "kable" function
+kable(gspace, digits = 1)
+
+3. The data covers 1038 urban areas.
+
+4. The greenspace classification scores for 2021 were mostly clustered around the bottom of the classification scale. Most cities had scores ranked "Low" or "Exceptionally Low", with only 63 cities out of the 1038 observed having scores of "High" or better. Refer to the associated table below. 
+```{r}
+table(greenspace_data_share$indicator_2021)
+```
+
+5. 66 urban areas scored "High" or above in 2015 while 71 scored "Exceptionally Low" from 2010 to 2021. Of the urban areas with arid climates, a total of 225 became more green from 2010 to 2021. Refer to the below code. 
+
+```{r}
+HighNVDI2015 = 
+  greenspace_data_share |>
+  filter(indicator_2010 %in% c("High", "Very High", "Exceptionally High")) |>
+  summarize(
+    obs = n()
+  )
+
+
+ExceptLow = 
+  gspace |>
+  filter(
+    indicator_2010 == "Exceptionally Low",
+    indicator_2015 == "Exceptionally Low",
+    indicator_2020 == "Exceptionally Low",
+    indicator_2021 == "Exceptionally Low"
+  ) |>
+  summarize(
+    obs = n()
+  )
+
+AridClimate
+gspace |>
+  filter(Climate_region == "Arid")|>
+  filter(annual_weight_avg_2010<annual_weight_avg_2020)|>
+  summarize(
+    obs = n()
+  )
+```
+6. 128 urban areas became less green bewteen 2010 and 2021. 
+
+7. 
+library(dplyr)
+gspchng <- gspace$annual_avg_2010-gspace$annual_avg_2021
+hist(gspchng)
+
+8.
+ggplot(gspace) +
+  geom_point(aes(x = City, y = annual_weight_avg_2021,
+color = "2010")) +
+  geom_point(aes(x = City, y = annual_weight_avg_2010,
+color = "2021")) +
+  scale_color_manual(values = c("2010" = "red", "2021" = "blue",
+                                name = "Year",
+                                labels = c("2010", "2021")))
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
